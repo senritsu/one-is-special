@@ -8,7 +8,7 @@ import Creature from './components/Creature.vue'
 import Heart from './components/Heart.vue'
 import RetryButton from './components/RetryButton.vue'
 
-const names = Array.from({length: 30}).map((x, i) => `creature (${i})`)
+const names = Array.from({length: 40}).map((x, i) => `creature (${i})`)
 
 const creatures = ref([] as {name: string, isSpecial: boolean}[])
 const hearts = ref(0)
