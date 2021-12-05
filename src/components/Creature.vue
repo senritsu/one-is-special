@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps<{ name: string, isSpecial: boolean, disabled: boolean, highlighted: boolean }>()
+const props = defineProps<{ name: string, isSpecial: boolean, disabled: boolean, highlighted: boolean, gameover: boolean }>()
 const emit = defineEmits<{(name: 'click'): void}>()
 
-const offsetX = (Math.random() - 0.5) * 100
-const offsetY = (Math.random() - 0.5) * 100
 const scale = 2 + Math.random() * 2
+const offsetX = (Math.random() - 0.5) * (6 - scale) * 25
+const offsetY = (Math.random() - 0.5) * (6 - scale) * 25
 
 const style = computed(() => ({
   transform: `scale(${scale}) translate(${offsetX}%, ${offsetY}%)`,
-  opacity: props.disabled ? 0.1 : 1
+  opacity: props.disabled ? 0.1 : 1,
+  filter: props.gameover ? 'grayscale(1)' : null
 }))
 </script>
 

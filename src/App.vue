@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import Chance from 'chance'
+import {Howl} from 'howler'
 
 const chance = new Chance()
 
@@ -16,21 +17,30 @@ const mistakes = ref([] as string[])
 const found = ref(false)
 const attempt = ref(0)
 
+const sounds = {
+  gameover: new Howl({src: ['/sounds/jingles_NES00.ogg']}),
+  mistake: new Howl({src: '/sounds/jingles_NES15.ogg'}),
+  win: new Howl({src: '/sounds/jingles_NES03.ogg'})
+}
+
 function onClick (i: number) {
   if (!hearts.value || found.value) return
 
   const creature = creatures.value[i]
 
-  console.log(creature)
-
   if (creature.isSpecial) {
     found.value = true
+    sounds.win.play()
   } else if (!mistakes.value.includes(creature.name)) {
     mistakes.value.push(creature.name)
     hearts.value -= 1
+    
+    if (!hearts.value) {
+      sounds.gameover.play()
+    } else {
+      sounds.mistake.play()
+    }
   }
-
-  console.log(mistakes.value)
 }
 
 function reset () {
@@ -52,7 +62,7 @@ reset()
       <h1 class="text" v-if="hearts && !found">One is special! Can you find it?</h1>
       <RetryButton v-else @click="reset" />
     </header>
-    <Creature v-for="(creature, i) of creatures" :key="`${attempt}-${i}`" v-bind="creature" :disabled="mistakes.includes(creature.name)" :highlighted="found && creature.isSpecial" @click="onClick(i)"></Creature>
+    <Creature v-for="(creature, i) of creatures" :key="`${attempt}-${i}`" v-bind="creature" :disabled="mistakes.includes(creature.name)" :highlighted="found && creature.isSpecial" :gameover="!hearts" @click="onClick(i)"></Creature>
     <div class="hearts">
       <Heart v-for="i in 3" :filled="i <= hearts" />
     </div>
